@@ -93,10 +93,10 @@ def softmax_loss_vectorized(W, X, y, reg):
     loss = np.sum(-np.log(softmax_scores[np.arange(num_train), y])) / num_train
 
     # Add regularization to the loss.
-    loss += 0.5 * reg * np.sum(W * W)
+    loss += 0.5 * reg * np.sum(W ** 2)
 
     scores_derivative = softmax_scores
-    scores_derivative[range(num_train), y] -= 1
+    scores_derivative[np.arange(num_train), y] -= 1
 
     dW = X.T.dot(scores_derivative) / num_train
     dW += W * reg
