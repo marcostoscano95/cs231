@@ -78,13 +78,13 @@ class TwoLayerNet(object):
         # Store the result in the scores variable, which should be an array of      #
         # shape (N, C).                                                             #
         #############################################################################
-        fc1_output = X.dot(W1) + b1 # Output of the first fully connected layer
+        output_l1 = np.dot(X, W1) + b1 # Output of the first layer
 
-        relu_activation = np.maximum(fc1_output, 0)  # Apply non-linear function (Relu)
+        relu_output = np.maximum(output_l1, 0)  # Apply non-linear function (Relu)
 
-        fc2_output = relu_activation.dot(W2) + b2  # Output of the first fully connected layer
+        output_l2 = np.dot(relu_output, W2) + b2  # Output of the second layer
 
-        scores = fc2_output
+        scores = output_l2
         #############################################################################
         #                              END OF YOUR CODE                             #
         #############################################################################
@@ -121,24 +121,19 @@ class TwoLayerNet(object):
         # and biases. Store the results in the grads dictionary. For example,       #
         # grads['W1'] should store the gradient on W1, and be a matrix of same size #
         #############################################################################
-
-        # back propagation
         softmax_derivative = softmax_scores
         softmax_derivative[np.arange(N), y] -= 1
 
-        # compute gradient for parameters
-        grads['W2'] = relu_activation.T.dot(softmax_derivative) / N
+        grads['W2'] = np.dot(relu_output.T, softmax_derivative) / N
         grads['b2'] = np.sum(softmax_derivative, axis=0) / N
 
-        relu_derivative = softmax_derivative.dot(W2.T) * (fc1_output > 0)
+        relu_derivative = np.dot(softmax_derivative, W2.T) * (output_l1 > 0)
 
-        grads['W1'] = X.T.dot(relu_derivative) / N
+        grads['W1'] = np.dot(X.T, relu_derivative) / N
         grads['b1'] = np.sum(relu_derivative, axis=0) / N
 
-        # add reg term
         grads['W2'] += W2 * reg
         grads['W1'] += W1 * reg
-
         #############################################################################
         #                              END OF YOUR CODE                             #
         #############################################################################
@@ -249,13 +244,13 @@ class TwoLayerNet(object):
         W1, b1 = self.params['W1'], self.params['b1']
         W2, b2 = self.params['W2'], self.params['b2']
 
-        fc1_output = X.dot(W1) + b1
+        output_l1 = np.dot(X, W1) + b1
 
-        relu_activation = np.maximum(fc1_output, 0)
+        relu_output = np.maximum(output_l1, 0)
 
-        fc2_output = relu_activation.dot(W2) + b2
+        output_l2 = np.dot(relu_output, W2) + b2
 
-        y_pred = np.argmax(fc2_output, axis=1)
+        y_pred = np.argmax(output_l2, axis=1)
         ###########################################################################
         #                              END OF YOUR CODE                           #
         ###########################################################################

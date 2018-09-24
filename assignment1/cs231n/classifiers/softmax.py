@@ -44,7 +44,7 @@ def softmax_loss_naive(W, X, y, reg):
     num_classes = W.shape[1]
 
     for t_i in xrange(num_train):
-        scores_t_i = X[t_i].dot(W) # Training example i x W = output
+        scores_t_i = np.dot(X[t_i], W)  # Training example i x W = output
         scores_t_i -= np.max(scores_t_i)  # To avoid numerical issues
         softmax_scores = np.exp(scores_t_i) / np.sum(np.exp(scores_t_i))
         loss += -np.log(softmax_scores[y[t_i]])
@@ -62,7 +62,7 @@ def softmax_loss_naive(W, X, y, reg):
     loss /= num_train
 
     # Add regularization to the loss.
-    loss += 0.5 * reg * np.sum(W * W)
+    loss += 0.5 * reg * np.sum(W ** 2)
     #############################################################################
     #                          END OF YOUR CODE                                 #
     #############################################################################
@@ -87,7 +87,7 @@ def softmax_loss_vectorized(W, X, y, reg):
     # regularization!                                                           #
     #############################################################################
     num_train = X.shape[0]
-    scores = X.dot(W)
+    scores = np.dot(X, W)
     scores -= np.max(scores, axis=1, keepdims=True)  # Numerical stability
     softmax_scores = np.exp(scores)/np.sum(np.exp(scores), axis=1, keepdims=True)
     loss = np.sum(-np.log(softmax_scores[np.arange(num_train), y])) / num_train
@@ -98,7 +98,7 @@ def softmax_loss_vectorized(W, X, y, reg):
     scores_derivative = softmax_scores
     scores_derivative[np.arange(num_train), y] -= 1
 
-    dW = X.T.dot(scores_derivative) / num_train
+    dW = np.dot(X.T, scores_derivative) / num_train
     dW += W * reg
     #############################################################################
     #                          END OF YOUR CODE                                 #
